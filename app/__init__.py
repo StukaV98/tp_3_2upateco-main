@@ -11,7 +11,7 @@ def init_app():
 
     @app.route('/customers/<int:customer_id>', methods=['GET'])
     def get_customer(customer_id):
-        sql = "SELECT customer_id, first_name, last_name, email, phone, street, city, state, zip_code FROM sail.customer WHERE customer_id = %s;"
+        sql = "SELECT customer_id, first_name, last_name, email, phone, street, city, state, zip_code FROM sales.customers WHERE customer_id = %s;"
         params = (customer_id,)
         result = DatabaseConnection.fetch_one(sql, params)
 
@@ -38,7 +38,7 @@ def init_app():
     @app.route('/customers', methods=['GET'])
     def get_customers():
         state = request.args.get('state', default=None, type=str)
-        sql = "SELECT customer_id, first_name, last_name, email, phone, street, city, state, zip_code FROM sales.customer"
+        sql = "SELECT customer_id, first_name, last_name, email, phone, street, city, state, zip_code FROM sales.customers"
         params = ()
 
         if state:
@@ -88,7 +88,7 @@ def init_app():
         if not first_name or not last_name or not email:
             return jsonify({'error': 'Missing required fields'}), 400
 
-        sql = "INSERT INTO sales.customer (first_name, last_name, email, phone, street, city, state, zip_code) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        sql = "INSERT INTO sales.customers (first_name, last_name, email, phone, street, city, state, zip_code) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
         params = (first_name, last_name, email, phone, street, city, state, zip_code)
 
         DatabaseConnection.execute(sql, params)
@@ -108,7 +108,7 @@ def init_app():
         state = data.get('state')
         zip_code = data.get('zip_code')
 
-        sql = "UPDATE sales.customer SET email = %s, phone = %s, street = %s, city = %s, state = %s, zip_code = %s WHERE customer_id = %s"
+        sql = "UPDATE sales.customers SET email = %s, phone = %s, street = %s, city = %s, state = %s, zip_code = %s WHERE customer_id = %s"
         params = (email, phone, street, city, state, zip_code, customer_id)
 
         DatabaseConnection.execute(sql, params)
@@ -119,7 +119,7 @@ def init_app():
     # DELETE /customers/<int:customer_id>
     @app.route('/customers/<int:customer_id>', methods=['DELETE'])
     def delete_customer(customer_id):
-        sql = "DELETE FROM sales.customer WHERE customer_id = %s"
+        sql = "DELETE FROM sales.customers WHERE customer_id = %s"
         params = (customer_id,)
 
         DatabaseConnection.execute(sql, params)
@@ -242,4 +242,4 @@ def init_app():
         products = [p for p in products if p["product_id"] != product_id]
         return jsonify({}), 204
 
-    return app           
+    return app
